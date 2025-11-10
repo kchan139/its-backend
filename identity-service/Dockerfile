@@ -1,30 +1,42 @@
 # IDENTITY SVC DOCKERFILE
 
 # --- STAGE 1: BUILD ---
-FROM maven:3.9.5-eclipse-temurin-21 AS build
+FROM golang:1.25-alpine AS build
+
+# install build dependencies
+RUN apk add --no-cache git ca-certificates tzdata
 
 WORKDIR /app
 
-COPY pom.xml .
+COPY go.mod go.sum ./
+RUN go mod download
 
-RUN mvn dependency:go-offline -B
+COPY cmd ./cmd
+COPY internal ./internal
 
-COPY src /app/src
-
-RUN mvn package -DskipTests
+# build the binary
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+    -ldflags='-w -s' \
+    -o /app/identity-service \
+    ./cmd/lets.go
 
 # --- STAGE 2: RUNTIME ---
-FROM eclipse-temurin:21-jre-alpine AS final
+FROM alpine:3.19 AS final
 
-RUN addgroup -S springboot && \
-    adduser -S -G springboot springboot
+# for https
+RUN apk --no-cache add ca-certificates
 
-COPY --from=build /app/target/*.jar app.jar
+RUN addgroup -S appgroup && \
+    adduser -S -G appgroup appuser
 
-RUN chown springboot:springboot app.jar
+WORKDIR /app
 
-USER springboot
+# Copy binary from build stage
+COPY --from=build /app/identity-service .
+RUN chown appuser:appgroup identity-service
+
+USER appuser
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["./identity-service"]

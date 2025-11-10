@@ -19,13 +19,11 @@ services:
       retries: 5
 
   identity:
-    build: 
+    build:
       context: ./identity-service
     container_name: identity-service
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:${DB_PORT}/${DB_NAME}
-      SPRING_DATASOURCE_USERNAME: ${DB_USER}
-      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@postgres-db:5432/${DB_NAME}?sslmode=disable
     ports:
       - "127.0.0.1:${IDENTITY_SVC_PORT}:8080"
     depends_on:
@@ -34,7 +32,7 @@ services:
     networks:
       - its_network
     # healthcheck:
-    #   test: ["wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
+    #   test: ["CMD", "/app/identity-service", "health"]
     #   start_period: 10s
     #   interval: 10s
     #   timeout: 5s
@@ -45,7 +43,7 @@ services:
       context: ./course-service
     container_name: course-service
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:${DB_PORT}/${DB_NAME}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${DB_NAME}
       SPRING_DATASOURCE_USERNAME: ${DB_USER}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
     ports:

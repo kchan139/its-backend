@@ -1,33 +1,22 @@
-# Maven
-target/
-pom.xml.tag
-pom.xml.releaseBackup
-pom.xml.versionsBackup
-pom.xml.next
-release.properties
-dependency-reduced-pom.xml
-buildNumber.properties
-.mvn/timing.properties
-.mvn/wrapper/maven-wrapper.jar
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
 
-# IDE
-.idea/
-*.iws
-*.iml
-*.ipr
-.vscode/
-.settings/
-.project
-.classpath
+# Test binary, built with `go test -c`
+*.test
 
-# OS
-.DS_Store
-Thumbs.db
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
 
-# Logs
-*.log
-*.tmp
-*.temp
+# Dependency directories (remove the comment below to include it)
+vendor/
 
-*.md
-README.md
+# Go workspace file
+go.work
+go.work.sum
+
+# env file
+.env
