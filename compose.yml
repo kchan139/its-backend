@@ -14,14 +14,17 @@ services:
       - its_network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME} -h localhost"]
-      interval: 10s
-      timeout: 5s
+      start_period: 1s
+      interval: 2s
+      timeout: 1s
       retries: 5
 
   identity:
     build:
       context: ./identity-service
     container_name: identity-service
+    volumes:
+      - ./identity-service:/app:ro
     environment:
       DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@postgres-db:5432/${DB_NAME}?sslmode=disable
     ports:
@@ -42,6 +45,8 @@ services:
     build: 
       context: ./course-service
     container_name: course-service
+    volumes:
+      - ./course-service/src:/app/src:ro
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${DB_NAME}
       SPRING_DATASOURCE_USERNAME: ${DB_USER}
