@@ -24,7 +24,7 @@ services:
       context: ./identity-service
     container_name: identity-service
     volumes:
-      - ./identity-service:/app:ro
+    - ./identity-service/internal:/app/internal:ro
     environment:
       DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@postgres-db:5432/${DB_NAME}?sslmode=disable
     ports:
