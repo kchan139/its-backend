@@ -9,21 +9,21 @@ import (
 )
 
 func main() {
-    cfg := config.Load()
+	cfg := config.Load()
 
-    db := database.Connect(cfg.DBUrl)
+	db := database.Connect(cfg.DBUrl)
 
-    // 3️⃣ Create Gin engine
-    r := gin.Default()
-	 r.GET("/hello", func(c *gin.Context) {
-        c.JSON(200, gin.H{
-            "message": "Hello World!",
-        })
-    })
+	//  Create Gin engine
+	r := gin.Default()
+	r.GET("/hello", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "Hello World!",
+		})
+	})
 
-    // 4️⃣ Register routes with db
-    routes.RegisterRoutes(r, db)
+	//  Register routes with db
+	routes.RegisterRoutes(r, db)
 
-    // 5️⃣ Start server
-    r.Run(":8080")
+	//  Start server
+	r.Run(":" + cfg.Port)
 }

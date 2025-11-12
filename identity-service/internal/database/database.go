@@ -1,20 +1,18 @@
 package database
 
 import (
-    "log"
+	"log"
 
-    "gorm.io/driver/postgres"
-    "gorm.io/gorm"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 func Connect(dbUrl string) *gorm.DB {
-    db, err := gorm.Open(postgres.Open(dbUrl), &gorm.Config{})
-    if err != nil {
-    	log.Printf("DB URL:%v\n",dbUrl )
+	db, err := gorm.Open(postgres.Open(dbUrl), &gorm.Config{})
+	if err != nil {
+		log.Fatalf("failed to connect to database: %v", err)
+	}
 
-        log.Fatalf("failed to connect to database: %v", err)
-    }
-
-    log.Println("✅ Connected to database")
-    return db
+	log.Println(" ✔ Connected to database")
+	return db
 }
