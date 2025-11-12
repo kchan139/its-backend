@@ -2,6 +2,7 @@ package services
 
 import (
 	"github.com/kchan139/intelligent-tutoring-system/identity-service/internal/repositories"
+	"github.com/kchan139/intelligent-tutoring-system/identity-service/internal/utils"
 	// "github.com/kchan139/intelligent-tutoring-system/identity-service/internal/models"
 )
 
@@ -27,4 +28,14 @@ func NewUserService(repo *repositories.UserRepository) *UserService {
 func (s *UserService) Authenticate(email, password string) (string, error) {
 	// TODO
 	return "haha", nil
+}
+func (s *UserService) CreateUser(email, fullname, password, role string) (error) {
+	hash, err := utils.HashPassword(password)
+	if err != nil {
+		return err
+	}
+	err = s.repo.StoreUser(email, fullname, hash, role)
+	if err != nil {
+		return err
+	}
 }

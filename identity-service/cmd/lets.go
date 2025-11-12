@@ -15,11 +15,7 @@ func main() {
 
 	//  Create Gin engine
 	r := gin.Default()
-	r.GET("/hello", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "Hello World!",
-		})
-	})
+
 
 	//  Register routes with db
 	routes.RegisterRoutes(r, db)
