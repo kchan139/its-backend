@@ -1,10 +1,12 @@
--- init.sql
-CREATE DATABASE content_db;
-CREATE DATABASE auth_db;
-CREATE DATABASE user_db;
+--- Local development only ---
 
-CREATE USER content_service WITH PASSWORD 'password';
-GRANT ALL PRIVILEGES ON DATABASE content_db TO content_service;
+-- Databases
+CREATE DATABASE course_db;
+CREATE DATABASE identity_db;
 
-CREATE USER auth_service WITH PASSWORD 'password';
-GRANT ALL PRIVILEGES ON DATABASE auth_db TO auth_service;
+-- Users
+CREATE USER course_service WITH PASSWORD 'password';
+GRANT ALL PRIVILEGES ON DATABASE course_db TO course_service;
+
+CREATE USER identity_service WITH PASSWORD 'password';
+GRANT ALL PRIVILEGES ON DATABASE identity_db TO identity_service;
