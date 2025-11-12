@@ -25,8 +25,8 @@ services:
     container_name: identity-service
     volumes:
     - ./identity-service/internal:/app/internal:ro
-    environment:
-      DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@postgres-db:5432/${DB_NAME}?sslmode=disable
+    env_file:
+      - .env
     ports:
       - "127.0.0.1:${IDENTITY_SVC_PORT}:8080"
     depends_on:
@@ -47,10 +47,8 @@ services:
     container_name: course-service
     volumes:
       - ./course-service/src:/app/src:ro
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${DB_NAME}
-      SPRING_DATASOURCE_USERNAME: ${DB_USER}
-      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+    env_file:
+      - .env
     ports:
       - "127.0.0.1:${COURSE_SVC_PORT}:8080"
     depends_on:
