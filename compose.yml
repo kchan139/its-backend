@@ -28,7 +28,7 @@ services:
     env_file:
       - .env
     ports:
-      - "127.0.0.1:${IDENTITY_SVC_PORT}:8080"
+      - "127.0.0.1:${IDENTITY_SVC_PORT}:${IDENTITY_SVC_PORT}"
     depends_on:
       postgres-db:
         condition: service_healthy
@@ -50,7 +50,7 @@ services:
     env_file:
       - .env
     ports:
-      - "127.0.0.1:${COURSE_SVC_PORT}:8080"
+      - "127.0.0.1:${COURSE_SVC_PORT}:${COURSE_SVC_PORT}"
     depends_on:
       postgres-db:
         condition: service_healthy
