@@ -1,7 +1,7 @@
 package com.example.course_service.controller;
 
 import com.example.course_service.dto.SubjectDTO;
-import com.example.course_service.exception.ErrorResponse;
+
 import com.example.course_service.service.SubjectService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController

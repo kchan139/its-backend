@@ -45,7 +45,7 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 
-		<!-- H2 Database (In-Memory for easy setup/testing) -->
+		<!-- Postgresql Database (In-Memory for easy setup/testing) -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>

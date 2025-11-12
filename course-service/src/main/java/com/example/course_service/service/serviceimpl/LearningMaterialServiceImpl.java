@@ -31,7 +31,7 @@ public class LearningMaterialServiceImpl implements LearningMaterialService {
     @Override
     public LearningMaterialDTO createMaterial(LearningMaterialDTO materialDTO) {
         Topic topic = topicRepository.findById(materialDTO.getTopicId())
-                .orElseThrow(() -> new ResourceNotFoundException("Topic not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Topic not found with id: "+ materialDTO.getTopicId()));
 
         LearningMaterial material = materialMapper.toEntity(materialDTO);
         material.setTopic(topic);
@@ -53,7 +53,7 @@ public class LearningMaterialServiceImpl implements LearningMaterialService {
     @Override
     public LearningMaterialDTO updateMaterial(Long id, LearningMaterialDTO materialDTO) {
         LearningMaterial material = materialRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Learning material not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Learning material not found with id: "+ id));
 
         material.setTitle(materialDTO.getTitle());
         material.setContent(materialDTO.getContent());
@@ -78,7 +78,7 @@ public class LearningMaterialServiceImpl implements LearningMaterialService {
     @Transactional(readOnly = true)
     public LearningMaterialDTO getMaterialById(Long id) {
         LearningMaterial material = materialRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Learning material not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Learning material not found with id: "+ id));
         return materialMapper.toDTO(material);
     }
 
@@ -101,7 +101,7 @@ public class LearningMaterialServiceImpl implements LearningMaterialService {
     @Override
     public void deleteMaterial(Long id) {
         if (!materialRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Learning material not found");
+            throw new ResourceNotFoundException("Learning material not found with id: "+ id);
         }
         materialRepository.deleteById(id);
     }

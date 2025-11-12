@@ -27,7 +27,7 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public TopicDTO createTopic(TopicDTO topicDTO) {
         Subject subject = subjectRepository.findById(topicDTO.getSubjectId())
-                .orElseThrow(() -> new ResourceNotFoundException("Subject not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Subject not found with id: "+ topicDTO.getSubjectId()));
 
         Topic topic = topicMapper.toEntity(topicDTO);
         topic.setSubject(subject);
@@ -39,7 +39,7 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public TopicDTO updateTopic(Long id, TopicDTO topicDTO) {
         Topic topic = topicRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Topic not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Topic not found with  id: "+ id));
 
         topic.setName(topicDTO.getName());
         topic.setDescription(topicDTO.getDescription());
@@ -53,7 +53,7 @@ public class TopicServiceImpl implements TopicService {
     @Transactional(readOnly = true)
     public TopicDTO getTopicById(Long id) {
         Topic topic = topicRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Topic not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Topic not found with id: "+ id));
         return topicMapper.toDTO(topic);
     }
 
@@ -76,7 +76,7 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public void deleteTopic(Long id) {
         if (!topicRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Topic not found");
+            throw new ResourceNotFoundException("Topic not found with id: "+ id);
         }
         topicRepository.deleteById(id);
     }

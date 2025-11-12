@@ -15,6 +15,4 @@ public class FeedbackDTO {
 
     @NotNull(message = "Subject ID is required")
     private Long subjectId;
-
-    private String studentId;
 }
