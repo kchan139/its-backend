@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/kchan139/intelligent-tutoring-system/identity-service/internal/services"
@@ -33,13 +34,18 @@ func (h *UserHandler) Login(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	// user, err := h.service.Authenticate(req.Email, req.Password)
-	// if err != nil {
-	//     c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid credentials"})
-	//     return
-	// }
+	user_jwt, err := h.service.Authenticate(req.Email, req.Password)
+	if user_jwt == "" {
+		if err != nil {
+			log.Fatalf("error from login authenticate: %v\n",err)
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "error from server"})
+	    	return
+		}
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid credentials"})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Hello World! from user handler",
+		"jwt": string(user_jwt),
 	})
 }
 func (h *UserHandler) Register(c *gin.Context) {
@@ -52,4 +58,5 @@ func (h *UserHandler) Register(c *gin.Context) {
 	    c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid credentials"})
 	    return
 	}
+	c.JSON(http.StatusOK, gin.H{"message": "Successfully register user."})
 }

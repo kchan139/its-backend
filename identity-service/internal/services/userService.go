@@ -1,9 +1,12 @@
 package services
 
 import (
+	"os"
+	"time"
+
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/kchan139/intelligent-tutoring-system/identity-service/internal/repositories"
 	"github.com/kchan139/intelligent-tutoring-system/identity-service/internal/utils"
-	// "github.com/kchan139/intelligent-tutoring-system/identity-service/internal/models"
 )
 
 type UserService struct {
@@ -26,8 +29,29 @@ func NewUserService(repo *repositories.UserRepository) *UserService {
 // }
 
 func (s *UserService) Authenticate(email, password string) (string, error) {
-	// TODO
-	return "haha", nil
+	user, err := s.repo.CheckUser(email, password)
+	if err != nil {
+		return "", err
+	}
+	if user == nil {
+		return "", nil
+	}
+
+	// making jwt
+	claims := jwt.MapClaims{
+        "id":    user.ID,
+        "email": user.Email,
+        "role":  user.RoleID,   // or user.Role.RoleName if preloaded
+        "exp":   time.Now().Add(24 * time.Hour).Unix(), // expires in 24 hours
+    }
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	jwt_key := []byte(os.Getenv("JWT_KEY"))
+	signedToken, err := token.SignedString(jwt_key)
+    if err != nil {
+        return "", err
+    }
+
+	return signedToken, nil
 }
 func (s *UserService) CreateUser(email, fullname, password, role string) (error) {
 	hash, err := utils.HashPassword(password)
@@ -38,4 +62,5 @@ func (s *UserService) CreateUser(email, fullname, password, role string) (error)
 	if err != nil {
 		return err
 	}
+	return nil
 }

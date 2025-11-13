@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/kchan139/intelligent-tutoring-system/identity-service/internal/models"
+	"github.com/kchan139/intelligent-tutoring-system/identity-service/internal/utils"
 	"gorm.io/gorm"
 )
 
@@ -44,4 +45,22 @@ func (r *UserRepository) StoreUser(email, fullname, hashed_password, role string
 		return err
 	}
 	return nil
+}
+
+func (r *UserRepository) CheckUser(email, password string) (*models.User, error) {
+	var user models.User
+	result := r.db.Where("email = ?", email).First(&user)
+	if result.Error != nil {
+        if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+            return nil, errors.New("invalid credentials")
+        }
+        return nil, result.Error
+    }
+	valid := utils.CheckPassword(password, user.Password)
+    if !valid {
+        return nil, errors.New("invalid credentials")
+    }
+
+    // 3. OK
+    return &user, nil
 }
