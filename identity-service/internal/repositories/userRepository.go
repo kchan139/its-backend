@@ -25,21 +25,20 @@ func (r *UserRepository) FindByEmail(email string) (*models.User, error) {
 	return &user, nil
 }
 
-func (r *UserRepository) StoreUser(email, fullname, hashed_password, role string) ( error) {
-	roleMap := map[string]uint{
-		"ADMIN":   1,
-		"TEACHER": 2,
-		"STUDENT": 3,
-	}
-	roleID, exists := roleMap[role]
-	if !exists {
-		return errors.New("invalid role: must be ADMIN, TEACHER, or STUDENT")
+func (r *UserRepository) StoreUser(email, fullname, hashed_password, role string) (error) {
+	var dbRole models.Role
+	result := r.db.Where("role_name = ?", role).First(&dbRole)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return errors.New("invalid role: role does not exist")
+		}
+		return result.Error
 	}
 	user := models.User{
 		Email:    email,
 		Fullname: fullname,
 		Password: string(hashed_password),
-		RoleID:   &roleID, // Assign pointer to roleID
+		RoleID:   &dbRole.ID, // Assign pointer to roleID
 	}
 	if err := r.db.Create(&user).Error; err != nil {
 		return err
@@ -58,7 +57,7 @@ func (r *UserRepository) CheckUser(email, password string) (*models.User, error)
     }
 	valid := utils.CheckPassword(password, user.Password)
     if !valid {
-        return nil, errors.New("invalid credentials")
+        return nil, errors.New("wrong username or password")
     }
 
     // 3. OK

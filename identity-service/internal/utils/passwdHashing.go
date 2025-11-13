@@ -12,3 +12,7 @@ func HashPassword(password string) (string, error) {
 func CheckPassword(password, hash string) bool {
     return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password)) == nil
 }
+
+func StrongPassword(password string) bool {
+    return len(password) > 6
+}

@@ -33,9 +33,6 @@ func (s *UserService) Authenticate(email, password string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	if user == nil {
-		return "", nil
-	}
 
 	// making jwt
 	claims := jwt.MapClaims{

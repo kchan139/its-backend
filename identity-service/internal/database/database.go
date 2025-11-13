@@ -14,14 +14,15 @@ func Connect(dbUrl string) *gorm.DB {
 		log.Fatalf("failed to connect to database: %v", err)
 	}
 	err = db.AutoMigrate(&models.Role{}, &models.User{})
+	if err != nil {
+    	log.Fatalf("Migration error: %v", err)
+	}
 	db.Create(&models.Role{RoleName: "ADMIN"})
 	db.Create(&models.Role{RoleName: "TEACHER"})
 	db.Create(&models.Role{RoleName: "STUDENT"})
 
 
-	if err != nil {
-    log.Fatalf("Migration error: %v", err)
-	}
+
 	log.Println(" ✔ Connected to database")
 	return db
 }
