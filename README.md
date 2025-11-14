@@ -24,7 +24,13 @@ All services communicate through Docker network `its_network`.
 git clone https://github.com/kchan139/intelligent-tutoring-system.git
 cd intelligent-tutoring-system
 cp .env.example .env
+docker compose up -d
 ```
+
+## API Documentation
+
+- **Identity Service**: [http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html)
+- **Course Service**: [http://localhost:8081/swagger-ui/index.html](http://localhost:8081/swagger-ui/index.html)
 
 Edit `.env` if needed (defaults work fine for local dev).
 
