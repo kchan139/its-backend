@@ -20,7 +20,6 @@ public class FeedbackController {
     @PostMapping
     public ResponseEntity<FeedbackDTO> createFeedback(@Valid @RequestBody FeedbackDTO feedbackDTO,
                                                       Authentication authentication) {
-        String studentId = authentication.getName();
         FeedbackDTO created = feedbackService.createFeedback(feedbackDTO);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }

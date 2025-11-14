@@ -11,7 +11,7 @@ public class FeedbackMapper {
         return FeedbackDTO.builder()
                 .feedbackId(feedback.getFeedbackId())
                 .content(feedback.getContent())
-                .subjectId(feedback.getSubject().getSubjectId())
+                .subjectId(feedback.getSubject() != null ? feedback.getSubject().getSubjectId() : null)
                 .build();
     }
 

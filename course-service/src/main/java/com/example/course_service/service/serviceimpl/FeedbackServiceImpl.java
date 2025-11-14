@@ -30,7 +30,6 @@ public class FeedbackServiceImpl implements FeedbackService {
 
         Feedback feedback = feedbackMapper.toEntity(feedbackDTO);
         feedback.setSubject(subject);
-//        feedback.setStudentId(studentId);
 
         Feedback savedFeedback = feedbackRepository.save(feedback);
         return feedbackMapper.toDTO(savedFeedback);

@@ -14,7 +14,7 @@ public class QuestionMapper {
                 .type(question.getType())
                 .correctAnswer(question.getCorrectAnswer())
                 .hintContent(question.getHintContent())
-                .topicId(question.getTopic().getTopicId())
+                .topicId(question.getTopic() != null ? question.getTopic().getTopicId() : null)
                 .build();
     }
 
