@@ -16,5 +16,6 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 	api := r.Group("/api/v1")
 	{
 		api.POST("/login", userHandler.Login)
+		api.POST("/register", userHandler.Register)
 	}
 }
