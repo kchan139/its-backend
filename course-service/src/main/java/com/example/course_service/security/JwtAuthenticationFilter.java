@@ -22,12 +22,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider tokenProvider;
     private static final List<String> EXCLUDE_URLS = List.of(
-            "/api/health",
-            "/swagger-ui",
-            "/v3/api-docs",
-            "/api-docs",
-            "/swagger-resources",
-            "/webjars"
+            "/actuator/health",
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+            "/swagger-resources/**",
+            "/webjars/**"
     );
 
     @Override
