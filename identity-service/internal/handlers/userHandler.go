@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/kchan139/intelligent-tutoring-system/identity-service/internal/services"
@@ -43,13 +42,12 @@ func NewUserHandler(service *services.UserService) *UserHandler {
 func (h *UserHandler) Login(c *gin.Context) {
 	var req LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Data is not in correct format"})
 		return
 	}
 	user_jwt, err := h.service.Authenticate(req.Email, req.Password)
 	if err != nil {
-		log.Printf("error from log in: %v", err)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
@@ -70,7 +68,8 @@ func (h *UserHandler) Login(c *gin.Context) {
 func (h *UserHandler) Register(c *gin.Context) {
 	var req RegisterRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
 	}
 	if !utils.StrongPassword(req.Password) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Passwords must be greater than 6 letters"})
