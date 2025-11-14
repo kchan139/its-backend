@@ -1,6 +1,7 @@
 package services
 
 import (
+	"log"
 	"os"
 	"time"
 
@@ -31,6 +32,7 @@ func NewUserService(repo *repositories.UserRepository) *UserService {
 func (s *UserService) Authenticate(email, password string) (string, error) {
 	user, err := s.repo.CheckUser(email, password)
 	if err != nil {
+		log.Printf("error from checking user existence in userService: %v", err)
 		return "", err
 	}
 
@@ -45,6 +47,7 @@ func (s *UserService) Authenticate(email, password string) (string, error) {
 	jwt_key := []byte(os.Getenv("JWT_KEY"))
 	signedToken, err := token.SignedString(jwt_key)
     if err != nil {
+		log.Printf("error from generating token in userService: %v", err)
         return "", err
     }
 
@@ -53,10 +56,12 @@ func (s *UserService) Authenticate(email, password string) (string, error) {
 func (s *UserService) CreateUser(email, fullname, password, role string) (error) {
 	hash, err := utils.HashPassword(password)
 	if err != nil {
+		log.Printf("error from hashing password in userService: %v", err)
 		return err
 	}
 	err = s.repo.StoreUser(email, fullname, hash, role)
 	if err != nil {
+		log.Printf("error from storing new user in userService: %v", err)
 		return err
 	}
 	return nil
