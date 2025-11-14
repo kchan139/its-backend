@@ -5,8 +5,32 @@ import (
 	"github.com/kchan139/intelligent-tutoring-system/identity-service/internal/database"
 	"github.com/kchan139/intelligent-tutoring-system/identity-service/internal/routes"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	_ "github.com/kchan139/intelligent-tutoring-system/identity-service/docs" //nolint
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
+
+// @title Identity Service API
+// @version 1.0
+// @description API for Identity Service in the Intelligent Tutoring System - HCMUT
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name API Support
+// @contact.email deo-co-dau-cu@fuckyou.com
+
+// @license.name MIT
+// @license.url https://opensource.org/licenses/MIT
+
+// @host localhost:8080
+// @BasePath /api/v1
+// @schemes http https
+
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description Type "Bearer" followed by a space and JWT token.
 
 func main() {
 	cfg := config.Load()
@@ -16,6 +40,12 @@ func main() {
 	//  Create Gin engine
 	r := gin.Default()
 
+	// NOTE: cors.Default() allows all
+	// this is used for local development only
+	r.Use(cors.Default())
+
+	//  Swagger endpoint
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	//  Register routes with db
 	routes.RegisterRoutes(r, db)

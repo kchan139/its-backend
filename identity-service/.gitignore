@@ -23,3 +23,8 @@ go.work.sum
 
 # env file
 .env
+
+# Swagger generated
+docs/docs.go
+docs/swagger.json
+docs/swagger.yaml
