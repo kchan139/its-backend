@@ -56,12 +56,12 @@ services:
         condition: service_healthy
     networks:
       - its_network
-    # healthcheck:
-    #   test: ["wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
-    #   start_period: 10s
-    #   interval: 10s
-    #   timeout: 5s
-    #   retries: 5
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:${COURSE_SVC_PORT}/actuator/health"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 5
    
 volumes:
   postgres_data:
