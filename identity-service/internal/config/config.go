@@ -11,9 +11,9 @@ type Config struct {
 }
 
 func Load() *Config {
-	dbUrl := os.Getenv("DATABASE_URL")
+	dbUrl := os.Getenv("DATABASE_URL_IDENTITY")
 	if dbUrl == "" {
-		log.Fatal("DATABASE_URL not set")
+		log.Fatal("DATABASE_URL_IDENTITY not set")
 	}
 
 	port := os.Getenv("IDENTITY_SVC_PORT")
