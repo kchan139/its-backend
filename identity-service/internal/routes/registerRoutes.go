@@ -12,10 +12,15 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 	userRepo := repositories.NewUserRepository(db)
 	userService := services.NewUserService(userRepo)
 	userHandler := handlers.NewUserHandler(userService)
+	headHandler := handlers.NewHeadHandler(db)
+
 
 	api := r.Group("/api/v1")
 	{
 		api.POST("/login", userHandler.Login)
 		api.POST("/register", userHandler.Register)
+		api.GET("/health", headHandler.Check)
+
+
 	}
 }
