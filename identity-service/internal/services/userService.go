@@ -18,16 +18,6 @@ func NewUserService(repo *repositories.UserRepository) *UserService {
 	return &UserService{repo}
 }
 
-// func (s *UserService) Authenticate(email, password string) (*models.User, error) {
-//     // user, err := s.repo.FindByEmail(email)
-//     // if err != nil {
-//     //     return nil, err
-//     // }
-//     // if !utils.CheckPassword(password, user.Password) {
-//     //     return nil, errors.New("invalid password")
-//     // }
-//     // return user, nil
-// }
 
 func (s *UserService) Authenticate(email, password string) (string, error) {
 	user, err := s.repo.CheckUser(email, password)
@@ -40,7 +30,7 @@ func (s *UserService) Authenticate(email, password string) (string, error) {
 	claims := jwt.MapClaims{
         "id":    user.ID,
         "email": user.Email,
-        "role":  user.RoleID,   // or user.Role.RoleName if preloaded
+        "role":  user.Role.RoleName,   // or user.Role.RoleName if preloaded
         "exp":   time.Now().Add(24 * time.Hour).Unix(), // expires in 24 hours
     }
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

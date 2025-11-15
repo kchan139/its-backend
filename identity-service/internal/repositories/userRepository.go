@@ -48,7 +48,7 @@ func (r *UserRepository) StoreUser(email, fullname, hashed_password, role string
 
 func (r *UserRepository) CheckUser(email, password string) (*models.User, error) {
 	var user models.User
-	result := r.db.Where("email = ?", email).First(&user)
+	result := r.db.Preload("Role").Where("email = ?", email).First(&user)
 	if result.Error != nil {
         if errors.Is(result.Error, gorm.ErrRecordNotFound) {
             return nil, errors.New("invalid credentials")
