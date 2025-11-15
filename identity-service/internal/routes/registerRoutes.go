@@ -19,8 +19,7 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 	{
 		api.POST("/login", userHandler.Login)
 		api.POST("/register", userHandler.Register)
-		api.GET("/health", headHandler.Check)
-
-
 	}
+	r.GET("/health", headHandler.Check)
+
 }
