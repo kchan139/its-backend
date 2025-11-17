@@ -1,4 +1,5 @@
 .env
+dummy.go
 
 HELP.md
 target/
