@@ -34,12 +34,12 @@ services:
         condition: service_healthy
     networks:
       - its_network
-    # healthcheck:
-    #   test: ["CMD", "/app/identity-service", "health"]
-    #   start_period: 10s
-    #   interval: 10s
-    #   timeout: 5s
-    #   retries: 5
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:${IDENTITY_SVC_PORT}/health"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   course:
     build: 
