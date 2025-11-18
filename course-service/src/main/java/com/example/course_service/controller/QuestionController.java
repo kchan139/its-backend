@@ -1,6 +1,7 @@
 package com.example.course_service.controller;
 
-import com.example.course_service.dto.QuestionDTO;
+import com.example.course_service.dto.request.QuestionRequestDTO;
+import com.example.course_service.dto.response.QuestionResponseDTO;
 import com.example.course_service.service.QuestionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,33 +18,40 @@ public class QuestionController {
     private final QuestionService questionService;
 
     @PostMapping
-    public ResponseEntity<QuestionDTO> createQuestion(@Valid @RequestBody QuestionDTO questionDTO) {
-        QuestionDTO created = questionService.createQuestion(questionDTO);
+    public ResponseEntity<QuestionResponseDTO> createQuestion( // Kiểu trả về là ResponseDTO
+                                                               @Valid @RequestBody QuestionRequestDTO questionRequestDTO) { // Đầu vào là RequestDTO
+
+        QuestionResponseDTO created = questionService.createQuestion(questionRequestDTO);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<QuestionDTO> updateQuestion(@PathVariable Long id,
-                                                      @Valid @RequestBody QuestionDTO questionDTO) {
-        QuestionDTO updated = questionService.updateQuestion(id, questionDTO);
+    public ResponseEntity<QuestionResponseDTO> updateQuestion( // Kiểu trả về là ResponseDTO
+                                                               @PathVariable Long id,
+                                                               @Valid @RequestBody QuestionRequestDTO questionRequestDTO) { // Đầu vào là RequestDTO
+
+        QuestionResponseDTO updated = questionService.updateQuestion(id, questionRequestDTO);
         return ResponseEntity.ok(updated);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<QuestionDTO> getQuestionById(@PathVariable Long id) {
-        QuestionDTO question = questionService.getQuestionById(id);
+    public ResponseEntity<QuestionResponseDTO> getQuestionById(@PathVariable Long id) { // Kiểu trả về là ResponseDTO
+
+        QuestionResponseDTO question = questionService.getQuestionById(id);
         return ResponseEntity.ok(question);
     }
 
     @GetMapping("/topic/{topicId}")
-    public ResponseEntity<List<QuestionDTO>> getQuestionsByTopicId(@PathVariable Long topicId) {
-        List<QuestionDTO> questions = questionService.getQuestionsByTopicId(topicId);
+    public ResponseEntity<List<QuestionResponseDTO>> getQuestionsByTopicId(@PathVariable Long topicId) { // List ResponseDTO
+
+        List<QuestionResponseDTO> questions = questionService.getQuestionsByTopicId(topicId);
         return ResponseEntity.ok(questions);
     }
 
     @GetMapping
-    public ResponseEntity<List<QuestionDTO>> getAllQuestions() {
-        List<QuestionDTO> questions = questionService.getAllQuestions();
+    public ResponseEntity<List<QuestionResponseDTO>> getAllQuestions() { // List ResponseDTO
+
+        List<QuestionResponseDTO> questions = questionService.getAllQuestions();
         return ResponseEntity.ok(questions);
     }
 

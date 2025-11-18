@@ -15,12 +15,15 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider tokenProvider;
+    private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
     private static final List<String> EXCLUDE_URLS = List.of(
             "/actuator/health",
             "/swagger-ui/**",
@@ -41,6 +44,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
 
         String token = getJwtFromRequest(request);
+        if (StringUtils.hasText(token)) {
+            log.debug("Found JWT: {}", token); // Kiểm tra token có được tìm thấy không
+
+            if (tokenProvider.validateToken(token)) {
+                log.debug("JWT is valid. Setting security context for user: {}", tokenProvider.getUserIdFromToken(token));
+                // ... (Logic thiết lập Authentication) ...
+            } else {
+                // TOKEN KHÔNG HỢP LỆ (Hết hạn, sai chữ ký)
+                log.warn("JWT validation failed for token: {}", token); // <-- Lỗi của bạn có thể ở đây
+            }
+        } else {
+            // TOKEN BỊ THIẾU
+            log.debug("No JWT found in request header.");
+        }
 
         if (StringUtils.hasText(token) && tokenProvider.validateToken(token)) {
             String userId = tokenProvider.getUserIdFromToken(token);

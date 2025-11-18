@@ -1,6 +1,7 @@
 package com.example.course_service.controller;
 
-import com.example.course_service.dto.FeedbackDTO;
+import com.example.course_service.dto.request.FeedbackRequestDTO;
+import com.example.course_service.dto.response.FeedbackResponseDTO;
 import com.example.course_service.service.FeedbackService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,27 +19,30 @@ public class FeedbackController {
     private final FeedbackService feedbackService;
 
     @PostMapping
-    public ResponseEntity<FeedbackDTO> createFeedback(@Valid @RequestBody FeedbackDTO feedbackDTO,
-                                                      Authentication authentication) {
-        FeedbackDTO created = feedbackService.createFeedback(feedbackDTO);
+    public ResponseEntity<FeedbackResponseDTO> createFeedback( // Trả về ResponseDTO
+                                                               @Valid @RequestBody FeedbackRequestDTO feedbackRequestDTO, // Đầu vào là RequestDTO
+                                                               Authentication authentication) {
+
+        // Truyền cả DTO và Authentication sang Service
+        FeedbackResponseDTO created = feedbackService.createFeedback(feedbackRequestDTO, authentication);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<FeedbackDTO> getFeedbackById(@PathVariable Long id) {
-        FeedbackDTO feedback = feedbackService.getFeedbackById(id);
+    public ResponseEntity<FeedbackResponseDTO> getFeedbackById(@PathVariable Long id) { // Trả về ResponseDTO
+        FeedbackResponseDTO feedback = feedbackService.getFeedbackById(id);
         return ResponseEntity.ok(feedback);
     }
 
     @GetMapping("/subject/{subjectId}")
-    public ResponseEntity<List<FeedbackDTO>> getFeedbacksBySubjectId(@PathVariable Long subjectId) {
-        List<FeedbackDTO> feedbacks = feedbackService.getFeedbacksBySubjectId(subjectId);
+    public ResponseEntity<List<FeedbackResponseDTO>> getFeedbacksBySubjectId(@PathVariable Long subjectId) { // List ResponseDTO
+        List<FeedbackResponseDTO> feedbacks = feedbackService.getFeedbacksBySubjectId(subjectId);
         return ResponseEntity.ok(feedbacks);
     }
 
     @GetMapping
-    public ResponseEntity<List<FeedbackDTO>> getAllFeedbacks() {
-        List<FeedbackDTO> feedbacks = feedbackService.getAllFeedbacks();
+    public ResponseEntity<List<FeedbackResponseDTO>> getAllFeedbacks() { // List ResponseDTO
+        List<FeedbackResponseDTO> feedbacks = feedbackService.getAllFeedbacks();
         return ResponseEntity.ok(feedbacks);
     }
 

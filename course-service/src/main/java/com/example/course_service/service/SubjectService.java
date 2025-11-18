@@ -1,13 +1,14 @@
 package com.example.course_service.service;
 
-import com.example.course_service.dto.SubjectDTO;
+import com.example.course_service.dto.request.SubjectRequestDTO;
+import com.example.course_service.dto.response.SubjectResponseDTO;
 
 import java.util.List;
 
 public interface SubjectService {
-    SubjectDTO createSubject(SubjectDTO subjectDTO);
-    SubjectDTO updateSubject(Long id, SubjectDTO subjectDTO);
-    SubjectDTO getSubjectById(Long id);
-    List<SubjectDTO> getAllSubjects();
+    SubjectResponseDTO createSubject(SubjectRequestDTO subjectRequestDTO);
+    SubjectResponseDTO updateSubject(Long id, SubjectRequestDTO subjectDTO);
+    SubjectResponseDTO getSubjectById(Long id);
+    List<SubjectResponseDTO> getAllSubjects();
     void deleteSubject(Long id);
 }

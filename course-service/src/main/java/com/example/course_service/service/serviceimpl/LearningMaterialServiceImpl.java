@@ -1,21 +1,19 @@
 package com.example.course_service.service.serviceimpl;
 
-import com.example.course_service.dto.LearningMaterialDTO;
 import com.example.course_service.dto.mapper.LearningMaterialMapper;
+import com.example.course_service.dto.request.LearningMaterialRequestDTO;
+import com.example.course_service.dto.response.LearningMaterialResponseDTO;
 import com.example.course_service.entity.LearningMaterial;
-import com.example.course_service.entity.Tag;
 import com.example.course_service.entity.Topic;
 import com.example.course_service.exception.ResourceNotFoundException;
 import com.example.course_service.repository.LearningMaterialRepository;
-import com.example.course_service.repository.TagRepository;
 import com.example.course_service.repository.TopicRepository;
 import com.example.course_service.service.LearningMaterialService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.HashSet;
+
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,76 +23,65 @@ public class LearningMaterialServiceImpl implements LearningMaterialService {
 
     private final LearningMaterialRepository materialRepository;
     private final TopicRepository topicRepository;
-    private final TagRepository tagRepository;
     private final LearningMaterialMapper materialMapper;
 
     @Override
-    public LearningMaterialDTO createMaterial(LearningMaterialDTO materialDTO) {
-        Topic topic = topicRepository.findById(materialDTO.getTopicId())
-                .orElseThrow(() -> new ResourceNotFoundException("Topic not found with id: "+ materialDTO.getTopicId()));
-
-        LearningMaterial material = materialMapper.toEntity(materialDTO);
+    public LearningMaterialResponseDTO createMaterial(LearningMaterialRequestDTO materialRequestDTO) {
+        // 1. Tìm kiếm và kiểm tra tồn tại của Topic (Khóa ngoại)
+        Topic topic = topicRepository.findById(materialRequestDTO.getTopicId())
+                .orElseThrow(() -> new ResourceNotFoundException("Topic not found with id: "+ materialRequestDTO.getTopicId()));
+        LearningMaterial material = materialMapper.toEntity(materialRequestDTO);
         material.setTopic(topic);
 
-        if (materialDTO.getTagIds() != null && !materialDTO.getTagIds().isEmpty()) {
-            Set<Tag> tags = new HashSet<>();
-            for (Long tagId : materialDTO.getTagIds()) {
-                Tag tag = tagRepository.findById(tagId)
-                        .orElseThrow(() -> new ResourceNotFoundException("Tag not found: " + tagId));
-                tags.add(tag);
-            }
-            material.setTags(tags);
-        }
-
         LearningMaterial savedMaterial = materialRepository.save(material);
-        return materialMapper.toDTO(savedMaterial);
+        return materialMapper.toResponseDTO(savedMaterial);
     }
 
     @Override
-    public LearningMaterialDTO updateMaterial(Long id, LearningMaterialDTO materialDTO) {
+    public LearningMaterialResponseDTO updateMaterial(Long id, LearningMaterialRequestDTO materialRequestDTO) {
         LearningMaterial material = materialRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Learning material not found with id: "+ id));
 
-        material.setTitle(materialDTO.getTitle());
-        material.setContent(materialDTO.getContent());
-        material.setType(materialDTO.getType());
-        material.setDuration(materialDTO.getDuration());
-
-        if (materialDTO.getTagIds() != null) {
-            Set<Tag> tags = new HashSet<>();
-            for (Long tagId : materialDTO.getTagIds()) {
-                Tag tag = tagRepository.findById(tagId)
-                        .orElseThrow(() -> new ResourceNotFoundException("Tag not found: " + tagId));
-                tags.add(tag);
-            }
-            material.setTags(tags);
+        material.setTitle(materialRequestDTO.getTitle());
+        material.setContent(materialRequestDTO.getContent());
+        material.setType(materialRequestDTO.getType());
+        material.setDuration(materialRequestDTO.getDuration());
+        Long newTopicId = materialRequestDTO.getTopicId();
+        if (newTopicId != null && !newTopicId.equals(material.getTopic().getTopicId())) {
+            Topic newTopic = topicRepository.findById(newTopicId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Topic not found with id: "+ newTopicId));
+            material.setTopic(newTopic);
         }
 
         LearningMaterial updatedMaterial = materialRepository.save(material);
-        return materialMapper.toDTO(updatedMaterial);
+        // 3. Ánh xạ Entity sang Response DTO để trả về
+        return materialMapper.toResponseDTO(updatedMaterial);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public LearningMaterialDTO getMaterialById(Long id) {
+    public LearningMaterialResponseDTO getMaterialById(Long id) {
         LearningMaterial material = materialRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Learning material not found with id: "+ id));
-        return materialMapper.toDTO(material);
+        // Trả về Response DTO
+        return materialMapper.toResponseDTO(material);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<LearningMaterialDTO> getMaterialsByTopicId(Long topicId) {
+    public List<LearningMaterialResponseDTO> getMaterialsByTopicId(Long topicId) {
         return materialRepository.findByTopic_TopicId(topicId).stream()
-                .map(materialMapper::toDTO)
+                // Sử dụng phương thức ánh xạ Response mới
+                .map(materialMapper::toResponseDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<LearningMaterialDTO> getAllMaterials() {
+    public List<LearningMaterialResponseDTO> getAllMaterials() {
         return materialRepository.findAll().stream()
-                .map(materialMapper::toDTO)
+                // Sử dụng phương thức ánh xạ Response mới
+                .map(materialMapper::toResponseDTO)
                 .collect(Collectors.toList());
     }
 

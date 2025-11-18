@@ -1,4 +1,4 @@
-package com.example.course_service.dto;
+package com.example.course_service.dto.request;
 
 import lombok.*;
 import jakarta.validation.constraints.*;
@@ -7,12 +7,9 @@ import jakarta.validation.constraints.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SubjectDTO {
-    private Long subjectId;
-
+public class SubjectRequestDTO {
     @NotBlank(message = "Subject name is required")
     private String name;
 
     private String description;
 }
-

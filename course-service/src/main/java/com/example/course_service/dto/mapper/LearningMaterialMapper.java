@@ -1,34 +1,35 @@
 package com.example.course_service.dto.mapper;
 
-import com.example.course_service.dto.LearningMaterialDTO;
+import com.example.course_service.dto.request.LearningMaterialRequestDTO;
+import com.example.course_service.dto.response.LearningMaterialResponseDTO;
 import com.example.course_service.entity.LearningMaterial;
+import com.example.course_service.entity.Topic;
 import org.springframework.stereotype.Component;
-import java.util.stream.Collectors;
 
 @Component
 public class LearningMaterialMapper {
 
-    public LearningMaterialDTO toDTO(LearningMaterial material) {
-        return LearningMaterialDTO.builder()
+    public LearningMaterialResponseDTO toResponseDTO(LearningMaterial material) {
+        return LearningMaterialResponseDTO.builder()
                 .materialId(material.getMaterialId())
                 .title(material.getTitle())
                 .content(material.getContent())
                 .type(material.getType())
                 .duration(material.getDuration())
-                .topicId(material.getTopic().getTopicId())
-                .tagIds(material.getTags().stream()
-                        .map(tag -> tag.getTagId())
-                        .collect(Collectors.toSet()))
+                .topicId(material.getTopic() != null ? material.getTopic().getTopicId() : null)
                 .build();
     }
 
-    public LearningMaterial toEntity(LearningMaterialDTO dto) {
+    // Ánh xạ Request DTO -> Entity (Nhận từ Client)
+    public LearningMaterial toEntity(LearningMaterialRequestDTO dto) {
+
+        Topic topic = Topic.builder().topicId(dto.getTopicId()).build();
         return LearningMaterial.builder()
-                .materialId(dto.getMaterialId())
                 .title(dto.getTitle())
                 .content(dto.getContent())
                 .type(dto.getType())
                 .duration(dto.getDuration())
+                .topic(topic) // Gán đối tượng Topic với ID
                 .build();
     }
 }
