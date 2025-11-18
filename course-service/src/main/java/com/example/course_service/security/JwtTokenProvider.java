@@ -26,7 +26,10 @@ public class JwtTokenProvider {
                 .parseClaimsJws(token)
                 .getBody();
 
-        return claims.getSubject();
+        Long userIdLong = claims.get("id", Long.class);
+
+        // Đảm bảo trả về ID dưới dạng String
+        return userIdLong != null ? String.valueOf(userIdLong) : null;
     }
 
     public String getRoleFromToken(String token) {
@@ -41,12 +44,14 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder()
-                    .setSigningKey(getSigningKey())
-                    .build()
-                    .parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token);
             return true;
+        } catch (io.jsonwebtoken.ExpiredJwtException e) {
+            // RẤT QUAN TRỌNG: Nếu token hết hạn, đây là lý do 403.
+            System.err.println("JWT Expired: " + e.getMessage());
+            return false;
         } catch (JwtException | IllegalArgumentException e) {
+            System.err.println("JWT Invalid: " + e.getMessage());
             return false;
         }
     }

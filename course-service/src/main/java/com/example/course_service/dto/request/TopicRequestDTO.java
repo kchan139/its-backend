@@ -1,4 +1,4 @@
-package com.example.course_service.dto;
+package com.example.course_service.dto.request;
 
 import lombok.*;
 import jakarta.validation.constraints.*;
@@ -7,15 +7,14 @@ import jakarta.validation.constraints.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TopicDTO {
-    private Long topicId;
+public class TopicRequestDTO {
 
     @NotBlank(message = "Topic name is required")
     private String name;
 
     private String description;
 
-    private String difficultyLevel;
+    private Integer difficultyLevel;
 
     @NotNull(message = "Subject ID is required")
     private Long subjectId;

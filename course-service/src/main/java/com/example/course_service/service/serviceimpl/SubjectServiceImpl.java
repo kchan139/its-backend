@@ -1,8 +1,8 @@
 package com.example.course_service.service.serviceimpl;
 
-
-import com.example.course_service.dto.SubjectDTO;
 import com.example.course_service.dto.mapper.SubjectMapper;
+import com.example.course_service.dto.request.SubjectRequestDTO;
+import com.example.course_service.dto.response.SubjectResponseDTO;
 import com.example.course_service.entity.Subject;
 import com.example.course_service.exception.ResourceNotFoundException;
 import com.example.course_service.repository.SubjectRepository;
@@ -22,37 +22,41 @@ public class SubjectServiceImpl implements SubjectService {
     private final SubjectMapper subjectMapper;
 
     @Override
-    public SubjectDTO createSubject(SubjectDTO subjectDTO) {
-        Subject subject = subjectMapper.toEntity(subjectDTO);
+    public SubjectResponseDTO createSubject(SubjectRequestDTO subjectRequestDTO) {
+        // Ánh xạ từ Request DTO sang Entity
+        Subject subject = subjectMapper.toEntity(subjectRequestDTO);
         Subject savedSubject = subjectRepository.save(subject);
-        return subjectMapper.toDTO(savedSubject);
+        // Ánh xạ từ Entity sang Response DTO
+        return subjectMapper.toResponseDTO(savedSubject);
     }
 
     @Override
-    public SubjectDTO updateSubject(Long id, SubjectDTO subjectDTO) {
+    public SubjectResponseDTO updateSubject(Long id, SubjectRequestDTO subjectRequestDTO) {
         Subject subject = subjectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Subject not found with id: " + id));
 
-        subject.setName(subjectDTO.getName());
-        subject.setDescription(subjectDTO.getDescription());
+        // Cập nhật Entity từ Request DTO
+        subject.setName(subjectRequestDTO.getName());
+        subject.setDescription(subjectRequestDTO.getDescription());
 
         Subject updatedSubject = subjectRepository.save(subject);
-        return subjectMapper.toDTO(updatedSubject);
+        // Trả về Response DTO
+        return subjectMapper.toResponseDTO(updatedSubject);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public SubjectDTO getSubjectById(Long id) {
+    public SubjectResponseDTO getSubjectById(Long id) {
         Subject subject = subjectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Subject not found with id: " + id));
-        return subjectMapper.toDTO(subject);
+        return subjectMapper.toResponseDTO(subject);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<SubjectDTO> getAllSubjects() {
+    public List<SubjectResponseDTO> getAllSubjects() {
         return subjectRepository.findAll().stream()
-                .map(subjectMapper::toDTO)
+                .map(subjectMapper::toResponseDTO)
                 .collect(Collectors.toList());
     }
 

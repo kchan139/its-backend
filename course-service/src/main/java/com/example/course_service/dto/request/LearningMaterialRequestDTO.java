@@ -1,15 +1,12 @@
-package com.example.course_service.dto;
+package com.example.course_service.dto.request;
 
 import lombok.*;
 import jakarta.validation.constraints.*;
-import java.util.Set;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class LearningMaterialDTO {
-    private Long materialId;
+public class LearningMaterialRequestDTO {
 
     @NotBlank(message = "Title is required")
     private String title;
@@ -21,5 +18,4 @@ public class LearningMaterialDTO {
     @NotNull(message = "Topic ID is required")
     private Long topicId;
 
-    private Set<Long> tagIds;
 }

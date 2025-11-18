@@ -1,8 +1,8 @@
 package com.example.course_service.service.serviceimpl;
 
-
-import com.example.course_service.dto.TopicDTO;
 import com.example.course_service.dto.mapper.TopicMapper;
+import com.example.course_service.dto.request.TopicRequestDTO;
+import com.example.course_service.dto.response.TopicResponseDTO;
 import com.example.course_service.entity.Subject;
 import com.example.course_service.entity.Topic;
 import com.example.course_service.exception.ResourceNotFoundException;
@@ -25,51 +25,67 @@ public class TopicServiceImpl implements TopicService {
     private final TopicMapper topicMapper;
 
     @Override
-    public TopicDTO createTopic(TopicDTO topicDTO) {
-        Subject subject = subjectRepository.findById(topicDTO.getSubjectId())
-                .orElseThrow(() -> new ResourceNotFoundException("Subject not found with id: "+ topicDTO.getSubjectId()));
+    public TopicResponseDTO createTopic(TopicRequestDTO topicRequestDTO) {
+        // 1. Tìm kiếm và kiểm tra tồn tại của Subject (Khóa ngoại)
+        Subject subject = subjectRepository.findById(topicRequestDTO.getSubjectId())
+                .orElseThrow(() -> new ResourceNotFoundException("Subject not found with id: "+ topicRequestDTO.getSubjectId()));
 
-        Topic topic = topicMapper.toEntity(topicDTO);
+        Topic topic = topicMapper.toEntity(topicRequestDTO);
+
         topic.setSubject(subject);
 
         Topic savedTopic = topicRepository.save(topic);
-        return topicMapper.toDTO(savedTopic);
+
+        return topicMapper.toResponseDTO(savedTopic);
     }
 
     @Override
-    public TopicDTO updateTopic(Long id, TopicDTO topicDTO) {
-        Topic topic = topicRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Topic not found with  id: "+ id));
-
-        topic.setName(topicDTO.getName());
-        topic.setDescription(topicDTO.getDescription());
-        topic.setDifficultyLevel(topicDTO.getDifficultyLevel());
-
-        Topic updatedTopic = topicRepository.save(topic);
-        return topicMapper.toDTO(updatedTopic);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public TopicDTO getTopicById(Long id) {
+    public TopicResponseDTO updateTopic(Long id, TopicRequestDTO topicRequestDTO) {
         Topic topic = topicRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Topic not found with id: "+ id));
-        return topicMapper.toDTO(topic);
+
+        // 1. Cập nhật các trường thuộc tính cơ bản
+        topic.setName(topicRequestDTO.getName());
+        topic.setDescription(topicRequestDTO.getDescription());
+        topic.setDifficultyLevel(topicRequestDTO.getDifficultyLevel());
+
+        // 2. Kiểm tra và cập nhật Khóa ngoại (Subject) nếu có thay đổi
+        Long newSubjectId = topicRequestDTO.getSubjectId();
+        if (newSubjectId != null && !newSubjectId.equals(topic.getSubject().getSubjectId())) {
+            Subject newSubject = subjectRepository.findById(newSubjectId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Subject not found with id: "+ newSubjectId));
+            topic.setSubject(newSubject);
+        }
+
+        Topic updatedTopic = topicRepository.save(topic);
+        // 3. Ánh xạ Entity sang Response DTO để trả về
+        return topicMapper.toResponseDTO(updatedTopic);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<TopicDTO> getTopicsBySubjectId(Long subjectId) {
+    public TopicResponseDTO getTopicById(Long id) {
+        Topic topic = topicRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Topic not found with id: "+ id));
+        // Trả về Response DTO
+        return topicMapper.toResponseDTO(topic);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TopicResponseDTO> getTopicsBySubjectId(Long subjectId) {
         return topicRepository.findBySubject_SubjectId(subjectId).stream()
-                .map(topicMapper::toDTO)
+                // Sử dụng phương thức ánh xạ Response mới
+                .map(topicMapper::toResponseDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<TopicDTO> getAllTopics() {
+    public List<TopicResponseDTO> getAllTopics() {
         return topicRepository.findAll().stream()
-                .map(topicMapper::toDTO)
+                // Sử dụng phương thức ánh xạ Response mới
+                .map(topicMapper::toResponseDTO)
                 .collect(Collectors.toList());
     }
 

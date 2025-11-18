@@ -33,14 +33,5 @@ public class LearningMaterial {
     @EqualsAndHashCode.Exclude
     private Topic topic;
 
-    @ManyToMany
-    @JoinTable(
-            name = "material_tags",
-            joinColumns = @JoinColumn(name = "material_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private Set<Tag> tags = new HashSet<>();
 }
 

@@ -1,4 +1,4 @@
-package com.example.course_service.dto;
+package com.example.course_service.dto.request;
 
 import lombok.*;
 import jakarta.validation.constraints.*;
@@ -7,9 +7,7 @@ import jakarta.validation.constraints.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class QuestionDTO {
-    private Long questionId;
-
+public class QuestionRequestDTO {
     @NotBlank(message = "Question text is required")
     private String text;
 

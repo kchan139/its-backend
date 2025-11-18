@@ -1,4 +1,4 @@
-package com.example.course_service.dto;
+package com.example.course_service.dto.request;
 
 import lombok.*;
 import jakarta.validation.constraints.*;
@@ -7,8 +7,7 @@ import jakarta.validation.constraints.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FeedbackDTO {
-    private Long feedbackId;
+public class FeedbackRequestDTO {
 
     @NotBlank(message = "Feedback content is required")
     private String content;

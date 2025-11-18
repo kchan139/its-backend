@@ -22,4 +22,6 @@ public class Feedback {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Subject subject;
+
+    private Long studentId;
 }
