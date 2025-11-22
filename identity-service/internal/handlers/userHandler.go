@@ -82,3 +82,20 @@ func (h *UserHandler) Register(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "Successfully register user."})
 }
+
+// @Summary Get All Users
+// @Description Retrieves a list of all users with their roles
+// @Tags Users
+// @Security BearerAuth
+// @Produce json
+// @Success 200 {array} object{id=uint,email=string,fullname=string,role=object{id=uint,role_name=string},created_at=string}
+// @Failure 401 {object} object{error=string} "Unauthorized"
+// @Router /users [get]
+func (h *UserHandler) GetAllUsers(c *gin.Context) {
+	users, err := h.service.GetAllUsers()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch users"})
+		return
+	}
+	c.JSON(http.StatusOK, users)
+}

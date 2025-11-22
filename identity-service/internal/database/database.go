@@ -51,7 +51,8 @@ func Connect(dbUrl string) *gorm.DB {
 		}
 		adminUser := models.User{
 			Email:    "admin@its.edu",
-			Fullname: "Admin",
+			Fullname: "Admin Tran",
+			Avatar:   utils.GenerateAvatar("Admin"),
 			Password: hashedPass,
 			RoleID:   &adminRole.ID,
 		}
@@ -69,7 +70,8 @@ func Connect(dbUrl string) *gorm.DB {
 		}
 		teacherUser := models.User{
 			Email:    "teacher@its.edu",
-			Fullname: "Teacher",
+			Fullname: "Truong Thi Thai Minh",
+			Avatar:   utils.GenerateAvatar("Truong Thi Thai Minh"),
 			Password: hashedPass,
 			RoleID:   &teacherRole.ID,
 		}
@@ -79,21 +81,37 @@ func Connect(dbUrl string) *gorm.DB {
 		}
 	}
 
-	var studentUser models.User
-	if err := db.Where("email = ?", "student@its.edu").First(&studentUser).Error; err != nil {
-		hashedPass, err := utils.HashPassword(seedPassword)
-		if err != nil {
-			log.Fatalf("Failed to hash student password: %v", err)
-		}
-		studentUser := models.User{
-			Email:    "student@its.edu",
-			Fullname: "Student",
-			Password: hashedPass,
-			RoleID:   &studentRole.ID,
-		}
+	seedStudents := []struct {
+		email    string
+		fullname string
+	}{
+		{"dkhoa@its.edu", "Tran Dinh Dang Khoa"},
+		{"phiung@its.edu", "Nguyen Ho Phi Ung"},
+		{"thuantruong@its.edu", "Truong Quoc Thuan"},
+		{"congminh@its.edu", "Hoang Cong Minh"},
+		{"hoanganh@its.edu", "Nguyen Huy Hoang Anh"},
+		{"longshiba@its.edu", "Tran Dang Hien Long"},
+		{"anho@its.edu", "Nguyen Ho Duc An"},
+		// TODO: add more
+	}
 
-		if err := db.Create(&studentUser).Error; err != nil {
-			log.Printf("Failed to create student user: %v", err)
+	for _, s := range seedStudents {
+		var existingStudent models.User
+		if err := db.Where("email = ?", s.email).First(&existingStudent).Error; err != nil {
+			hashedPass, err := utils.HashPassword(seedPassword)
+			if err != nil {
+				log.Fatalf("Failed to hash password for %s: %v", s.email, err)
+			}
+			newStudent := models.User{
+				Email:    s.email,
+				Fullname: s.fullname,
+				Avatar:   utils.GenerateAvatar(s.fullname),
+				Password: hashedPass,
+				RoleID:   &studentRole.ID,
+			}
+			if err := db.Create(&newStudent).Error; err != nil {
+				log.Printf("Failed to create student %s: %v", s.email, err)
+			}
 		}
 	}
 

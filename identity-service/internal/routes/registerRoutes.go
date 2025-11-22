@@ -14,11 +14,11 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 	userHandler := handlers.NewUserHandler(userService)
 	headHandler := handlers.NewHeadHandler(db)
 
-
 	api := r.Group("/api/v1")
 	{
 		api.POST("/login", userHandler.Login)
 		api.POST("/register", userHandler.Register)
+		api.GET("/users", userHandler.GetAllUsers)
 	}
 	r.GET("/health", headHandler.Check)
 
