@@ -24,6 +24,7 @@ services:
     container_name: its-minio
     ports:
       - "127.0.0.1:${MINIO_UI_PORT}:9001"
+    user: "1000:1000"
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
@@ -33,7 +34,15 @@ services:
     networks:
       - its_network
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9000/minio/health/live"]
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:9000/minio/health/live",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -44,7 +53,7 @@ services:
       context: ./identity-service
     container_name: identity-service
     volumes:
-    - ./identity-service/internal:/app/internal:ro
+      - ./identity-service/internal:/app/internal:ro
     env_file:
       - .env
     ports:
@@ -55,14 +64,22 @@ services:
     networks:
       - its_network
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:${IDENTITY_SVC_PORT}/health"]
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:${IDENTITY_SVC_PORT}/health",
+        ]
       start_period: 10s
       interval: 10s
       timeout: 5s
       retries: 5
 
   course:
-    build: 
+    build:
       context: ./course-service
     container_name: course-service
     volumes:
@@ -77,12 +94,20 @@ services:
     networks:
       - its_network
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:${COURSE_SVC_PORT}/actuator/health"]
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:${COURSE_SVC_PORT}/actuator/health",
+        ]
       start_period: 10s
       interval: 10s
       timeout: 5s
       retries: 5
-   
+
 volumes:
   postgres_data:
   minio_data:
