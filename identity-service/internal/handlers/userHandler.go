@@ -104,7 +104,7 @@ func (h *UserHandler) GetAllUsers(c *gin.Context) {
 	}
 
 	if role != "ADMIN" {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "user is not Admin"})
+		c.JSON(http.StatusForbidden, gin.H{"error": "User is not Admin"})
 		return
 	}
 
