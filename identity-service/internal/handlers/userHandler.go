@@ -92,6 +92,22 @@ func (h *UserHandler) Register(c *gin.Context) {
 // @Failure 401 {object} object{error=string} "Unauthorized"
 // @Router /users [get]
 func (h *UserHandler) GetAllUsers(c *gin.Context) {
+	roleValue, exists := c.Get("role")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+	role, ok := roleValue.(string)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid role type"})
+		return
+	}
+
+	if role != "ADMIN" {
+		c.JSON(http.StatusForbidden, gin.H{"error": "User is not Admin"})
+		return
+	}
+
 	users, err := h.service.GetAllUsers()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch users"})
