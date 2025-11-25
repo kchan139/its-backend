@@ -3,6 +3,7 @@ package routes
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/kchan139/intelligent-tutoring-system/identity-service/internal/handlers"
+	"github.com/kchan139/intelligent-tutoring-system/identity-service/internal/middleware"
 	"github.com/kchan139/intelligent-tutoring-system/identity-service/internal/repositories"
 	"github.com/kchan139/intelligent-tutoring-system/identity-service/internal/services"
 	"gorm.io/gorm"
@@ -18,8 +19,13 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 	{
 		api.POST("/login", userHandler.Login)
 		api.POST("/register", userHandler.Register)
-		api.GET("/users", userHandler.GetAllUsers)
 	}
+	auth := r.Group("/api/v1/auth")
+	auth.Use(middleware.AuthMiddleware())
+	{
+		auth.GET("/users", userHandler.GetAllUsers)
+	}
+
 	r.GET("/health", headHandler.Check)
 
 }
