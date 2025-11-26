@@ -27,6 +27,19 @@ public class LearningMaterial {
 
     private Integer duration;
 
+    // File storage fields
+    @Column(name = "file_name")
+    private String fileName;
+
+    @Column(name = "file_url")
+    private String fileUrl;
+
+    @Column(name = "file_size")
+    private Long fileSize;
+
+    @Column(name = "content_type")
+    private String contentType;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "topic_id", nullable = false)
     @ToString.Exclude

@@ -6,16 +6,17 @@ import lombok.Data;
 @Data
 @Builder
 public class LearningMaterialResponseDTO {
-
-    // ID do hệ thống quản lý
     private Long materialId;
-
     private String title;
     private String content;
     private String type;
     private Integer duration;
-
-    // Khóa ngoại của Topic mà nó thuộc về
     private Long topicId;
+
+    // File metadata
+    private String fileName;
+    private String fileUrl;
+    private Long fileSize;
+    private String contentType;
 
 }
