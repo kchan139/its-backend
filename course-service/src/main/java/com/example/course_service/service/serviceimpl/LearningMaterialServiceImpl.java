@@ -14,9 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -60,15 +58,22 @@ public class LearningMaterialServiceImpl implements LearningMaterialService {
         material.setContent(requestDTO.getContent());
         material.setType(requestDTO.getType());
         material.setDuration(requestDTO.getDuration());
+        // Update topic if changed
+        if (requestDTO.getTopicId() != null &&
+                (material.getTopic() == null || !material.getTopic().getTopicId().equals(requestDTO.getTopicId()))) {
+            Topic newTopic = topicRepository.findById(requestDTO.getTopicId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Topic not found"));
+            material.setTopic(newTopic);
+        }
 
         // Handle file upload/replacement
         if (file != null && !file.isEmpty()) {
-            // Delete old file if exists
+            // Upload new file first
+            String fileName = minioService.uploadFile(file, "materials");
+            // Delete old file if exists, after successful upload
             if (material.getFileName() != null) {
                 minioService.deleteFile(material.getFileName());
             }
-
-            String fileName = minioService.uploadFile(file, "materials");
             material.setFileName(fileName);
             material.setFileSize(file.getSize());
             material.setContentType(file.getContentType());
@@ -108,12 +113,18 @@ public class LearningMaterialServiceImpl implements LearningMaterialService {
         LearningMaterial material = materialRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Learning material not found"));
 
-        // Delete file from MinIO if exists
-        if (material.getFileName() != null) {
-            minioService.deleteFile(material.getFileName());
+        try {
+            // Delete file from MinIO if exists
+            if (material.getFileName() != null) {
+                minioService.deleteFile(material.getFileName());
+            }
+            materialRepository.deleteById(id);
+        } catch (Exception e) {
+            // Log the error and throw a runtime exception to indicate partial failure
+            // You may want to use a logger here instead of System.err
+            System.err.println("Failed to delete material or associated file: " + e.getMessage());
+            throw new RuntimeException("Failed to delete material or associated file", e);
         }
-
-        materialRepository.deleteById(id);
     }
 
     @Override
