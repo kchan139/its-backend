@@ -16,7 +16,7 @@ All services communicate through Docker network `its_network`.
 
 ## Quick Start
 ```bash
-git clone https://github.com/kchan139/intelligent-tutoring-system.git
+git clone https://github.com/kchan139/its-backend.git
 cd intelligent-tutoring-system
 cp .env.example .env
 docker compose up -d
