@@ -42,7 +42,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            response.setStatus(HttpServletResponse.SC_OK);
+            filterChain.doFilter(request, response);
+            return; // Quan trọng: return để kết thúc hàm luôn
+        }
         String token = getJwtFromRequest(request);
         if (StringUtils.hasText(token)) {
             log.debug("Found JWT: {}", token); // Kiểm tra token có được tìm thấy không
