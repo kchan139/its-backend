@@ -137,7 +137,8 @@ public class LearningMaterialServiceImpl implements LearningMaterialService {
             throw new RuntimeException("No file attached to this material");
         }
 
-        // Generate presigned URL valid for 60 minutes
-        return minioService.getPresignedUrl(material.getFileName(), 60);
+        String internalUrl = minioService.getPresignedUrl(material.getFileName(), 60);
+
+        return internalUrl.replace("http://its-minio:9000", "http://localhost:9000");
     }
 }
