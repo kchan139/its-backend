@@ -40,9 +40,18 @@ func main() {
 	//  Create Gin engine
 	r := gin.Default()
 
-	// NOTE: cors.Default() allows all
-	// this is used for local development only
-	r.Use(cors.Default())
+	// NOTE: very relaxed cors
+	// local development only
+	r.Use(cors.New(cors.Config{
+		AllowOrigins: []string{
+			"http://localhost:5173",
+			"http://its-edu:5173",
+		},
+		AllowMethods:     []string{"*"},
+		AllowHeaders:     []string{"*"},
+		ExposeHeaders:    []string{"*"},
+		AllowCredentials: true,
+	}))
 
 	//  Swagger endpoint
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

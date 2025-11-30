@@ -85,6 +85,7 @@ func Connect(dbUrl string) *gorm.DB {
 		email    string
 		fullname string
 	}{
+		{"student@its.edu", "Nguyen Student"},
 		{"dkhoa@its.edu", "Tran Dinh Dang Khoa"},
 		{"phiung@its.edu", "Nguyen Ho Phi Ung"},
 		{"thuantruong@its.edu", "Truong Quoc Thuan"},
