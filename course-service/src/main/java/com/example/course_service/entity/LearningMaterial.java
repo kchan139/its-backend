@@ -3,8 +3,6 @@ package com.example.course_service.entity;
 
 import lombok.*;
 import jakarta.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "learning_materials")
@@ -26,6 +24,19 @@ public class LearningMaterial {
     private String type;
 
     private Integer duration;
+
+    // File storage fields
+    @Column(name = "file_name")
+    private String fileName;
+
+    @Column(name = "file_url")
+    private String fileUrl;
+
+    @Column(name = "file_size")
+    private Long fileSize;
+
+    @Column(name = "content_type")
+    private String contentType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "topic_id", nullable = false)

@@ -90,7 +90,7 @@ func (h *UserHandler) Register(c *gin.Context) {
 // @Produce json
 // @Success 200 {array} object{id=uint,email=string,fullname=string,role=object{id=uint,role_name=string},created_at=string}
 // @Failure 401 {object} object{error=string} "Unauthorized"
-// @Router /users [get]
+// @Router /auth/users [get]
 func (h *UserHandler) GetAllUsers(c *gin.Context) {
 	roleValue, exists := c.Get("role")
 	if !exists {

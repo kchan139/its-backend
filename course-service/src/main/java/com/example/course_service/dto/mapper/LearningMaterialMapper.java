@@ -6,6 +6,7 @@ import com.example.course_service.entity.LearningMaterial;
 import com.example.course_service.entity.Topic;
 import org.springframework.stereotype.Component;
 
+
 @Component
 public class LearningMaterialMapper {
 
@@ -17,19 +18,21 @@ public class LearningMaterialMapper {
                 .type(material.getType())
                 .duration(material.getDuration())
                 .topicId(material.getTopic() != null ? material.getTopic().getTopicId() : null)
+                .fileName(material.getFileName())
+                .fileUrl(material.getFileUrl())
+                .fileSize(material.getFileSize())
+                .contentType(material.getContentType())
                 .build();
     }
 
-    // Ánh xạ Request DTO -> Entity (Nhận từ Client)
-    public LearningMaterial toEntity(LearningMaterialRequestDTO dto) {
-
-        Topic topic = Topic.builder().topicId(dto.getTopicId()).build();
+    public LearningMaterial toEntity(LearningMaterialRequestDTO requestDTO) {
+        Topic topic = Topic.builder().topicId(requestDTO.getTopicId()).build();
         return LearningMaterial.builder()
-                .title(dto.getTitle())
-                .content(dto.getContent())
-                .type(dto.getType())
-                .duration(dto.getDuration())
-                .topic(topic) // Gán đối tượng Topic với ID
+                .title(requestDTO.getTitle())
+                .content(requestDTO.getContent())
+                .type(requestDTO.getType())
+                .duration(requestDTO.getDuration())
+                .topic(topic)
                 .build();
     }
 }
