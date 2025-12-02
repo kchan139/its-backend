@@ -64,8 +64,26 @@ func (h *UserHandler) Login(c *gin.Context) {
 // @Success 200 {object} object{message=string} "Successful registration"
 // @Failure 400 {object} object{error=string} "Invalid request body or weak password"
 // @Failure 401 {object} object{error=string} "Registration error (e.g., user exists)"
-// @Router /register [post]
+// @Failure 403 {object} object{error=string} "User is not Admin"
+//
+// @Router /auth/register [post]
 func (h *UserHandler) Register(c *gin.Context) {
+
+	roleValue, exists := c.Get("role")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+	role, ok := roleValue.(string)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid role type"})
+		return
+	}
+
+	if role != "ADMIN" {
+		c.JSON(http.StatusForbidden, gin.H{"error": "User is not Admin"})
+		return
+	}
 	var req RegisterRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
@@ -86,8 +104,7 @@ func (h *UserHandler) Register(c *gin.Context) {
 // @Summary Get All Users
 // @Description Retrieves a list of all users with their roles
 // @Tags Users
-// @Security BearerAuth
-// @Produce json
+// @Security BearerAuth// @Produce json
 // @Success 200 {array} object{id=uint,email=string,fullname=string,role=object{id=uint,role_name=string},created_at=string}
 // @Failure 401 {object} object{error=string} "Unauthorized"
 // @Router /auth/users [get]
