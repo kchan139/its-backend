@@ -139,6 +139,7 @@ public class LearningMaterialServiceImpl implements LearningMaterialService {
 
         String internalUrl = minioService.getPresignedUrl(material.getFileName(), 60);
 
-        return internalUrl.replace("http://its-minio:9000", "http://localhost:9000");
+        return internalUrl;
+        // return internalUrl.replace("http://its-minio:9000", "http://localhost:9000");
     }
 }
