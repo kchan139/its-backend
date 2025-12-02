@@ -66,7 +66,7 @@ func (h *UserHandler) Login(c *gin.Context) {
 // @Failure 401 {object} object{error=string} "Registration error (e.g., user exists)"
 // @Failure 403 {object} object{error=string} "User is not Admin"
 // @Security BearerAuth
-// @Router /auth/register [post]
+// @Router /register [post]
 func (h *UserHandler) Register(c *gin.Context) {
 
 	roleValue, exists := c.Get("role")
