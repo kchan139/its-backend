@@ -65,7 +65,7 @@ func (h *UserHandler) Login(c *gin.Context) {
 // @Failure 400 {object} object{error=string} "Invalid request body or weak password"
 // @Failure 401 {object} object{error=string} "Registration error (e.g., user exists)"
 // @Failure 403 {object} object{error=string} "User is not Admin"
-//
+// @Security BearerAuth
 // @Router /auth/register [post]
 func (h *UserHandler) Register(c *gin.Context) {
 
@@ -104,7 +104,8 @@ func (h *UserHandler) Register(c *gin.Context) {
 // @Summary Get All Users
 // @Description Retrieves a list of all users with their roles
 // @Tags Users
-// @Security BearerAuth// @Produce json
+// @Security BearerAuth
+// // @Produce json
 // @Success 200 {array} object{id=uint,email=string,fullname=string,role=object{id=uint,role_name=string},created_at=string}
 // @Failure 401 {object} object{error=string} "Unauthorized"
 // @Router /auth/users [get]
