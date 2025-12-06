@@ -10,7 +10,7 @@ import (
 )
 
 type UserHandler struct {
-	service *services.UserService
+	service services.IUserService
 }
 
 type LoginRequest struct {
@@ -25,7 +25,7 @@ type RegisterRequest struct {
 	Role     string `json:"role" binding:"required"`
 }
 
-func NewUserHandler(service *services.UserService) *UserHandler {
+func NewUserHandler(service services.IUserService) *UserHandler {
 	return &UserHandler{service: service}
 }
 
@@ -68,7 +68,6 @@ func (h *UserHandler) Login(c *gin.Context) {
 // @Security BearerAuth
 // @Router /register [post]
 func (h *UserHandler) Register(c *gin.Context) {
-
 	roleValue, exists := c.Get("role")
 	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
